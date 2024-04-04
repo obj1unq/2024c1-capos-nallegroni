@@ -1,0 +1,65 @@
+import capos.*
+import artefactos.*
+
+test "rolando encuentra y agarra la espada y el libro de hechizos,desp encuentra el collar divino 
+(no lo agarra, ya que tiene la espada y el libro encima y su capacidad es de 2)" {
+	rolando.agarrar(espadaDelDestino)
+	rolando.agarrar(libroDeHechizos)
+	assert.equals(2, rolando.artefactos().size())
+	rolando.agarrar(collarDivino)
+	assert.equals(2, rolando.artefactos().size())
+}
+
+test "rolando encuentra y agarra la espada y el libro. Dsp llega al castillo y deja la espada y el libro. 
+Desp encuentra el collar y lo agarra. Desp vuelve al castillo y deja el collar." {
+	rolando.agarrar(espadaDelDestino)
+	rolando.agarrar(libroDeHechizos)
+	assert.equals(2, rolando.artefactos().size())
+	rolando.irAlHogar()
+	assert.equals(0, rolando.artefactos().size())
+	assert.equals(2, castillo.baul().size())
+	rolando.agarrar(collarDivino)
+	rolando.irAlHogar()
+	assert.equals(3, castillo.baul().size())
+	assert.that(castillo.baul().contains(espadaDelDestino))
+	assert.that(castillo.baul().contains(libroDeHechizos))
+	assert.that(castillo.baul().contains(collarDivino))
+}
+
+test "rolando tiene el collar y la espada. Los deja en el castillo. Rolando tiene la armadura. 
+Entonces rolando posee el collar, la espada y la armadura. El libro no lo posee." {
+	rolando.agarrar(espadaDelDestino)
+	rolando.agarrar(collarDivino)
+	rolando.irAlHogar()
+	assert.that(castillo.baul().contains(espadaDelDestino))
+	assert.that(castillo.baul().contains(collarDivino))
+	rolando.agarrar(armaduraAceroValyrio)
+	assert.that(rolando.posee(espadaDelDestino))
+	assert.that(rolando.posee(collarDivino))
+	assert.that(rolando.posee(armaduraAceroValyrio))
+	assert.notThat(rolando.posee(libroDeHechizos))
+}
+
+test "rolando encuentra la espada del destino (la agarra)
+rolando encuentra el libro de hechizos (la agarra)
+rolando encuentra el collar divino (no lo agarra, ya que tiene la espada y el libro encima y su capacidad es de 2)
+rolando llega al castillo de piedra (deja en el castillo la espada y el libro de hechizos)
+rolando encuentra la armadura de acero valyrio (la agarra)
+rolando encuentra el collar divino (ahora si lo puede agarrar, ya que liberó espacio)
+Si consultamos la historia de encuentro con los artefactos debería ser:
+
+espada del destino
+libro de hechicos
+collar divino
+armadura de acero valyrio
+collar divino (de nuevo!)" {
+	rolando.agarrar(espadaDelDestino)
+	rolando.agarrar(libroDeHechizos)
+	rolando.agarrar(collarDivino)
+	rolando.irAlHogar()
+	rolando.agarrar(armaduraAceroValyrio)
+	rolando.agarrar(collarDivino)
+	assert.equals([espadaDelDestino, libroDeHechizos,collarDivino, armaduraAceroValyrio, collarDivino ], rolando.historialDeArtefactos())
+	
+	
+}
